@@ -1,0 +1,14 @@
+# db-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: petclinic
+  name: petclinic-db
+spec:
+  type: NodePort
+  selector:
+    app: petclinic-db
+  ports:
+    - name: "postgres"
+      protocol: TCP
+      port: 5432

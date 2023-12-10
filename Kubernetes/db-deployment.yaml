@@ -1,0 +1,36 @@
+# db-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: petclinic
+  name: petclinic-db
+spec:
+  selector:
+    matchLabels:
+      app: petclinic-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: petclinic-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16.1
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: petclinic
+            - name: POSTGRES_USER
+              value: petclinic
+            - name: POSTGRES_PASSWORD
+              value: petclinic
+          volumeMounts:
+            - mountPath: "/var/lib/postgresql/data"
+              name: "petclinic-pgdata"
+      volumes:
+        - hostPath:
+            path: "/var/lib/docker/volumes/petclinic-pgdata/_data"
+          name: petclinic-pgdata
+

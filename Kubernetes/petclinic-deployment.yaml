@@ -1,0 +1,40 @@
+# petclinic-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: petclinic
+  name: petclinic
+spec:
+  selector:
+    matchLabels:
+      app: petclinic
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: petclinic
+    spec:
+      containers:
+        - name: petclinic
+          image: ghcr.io/alaric11/petclinic:3.2.0-SNAPSHOT
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: "http"
+          env:
+            - name: POSTGRES_URL
+              value: jdbc:postgresql://${PETCLINIC_DB_SERVICE_HOST}/petclinic
+          resources:
+            limits:
+              memory: 1Gi
+              cpu: "1"
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 999
+            runAsGroup: 999
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+      imagePullSecrets:
+        - name: regcred
